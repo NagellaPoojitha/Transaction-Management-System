@@ -1,0 +1,84 @@
+package com.poojitha.bank;
+import javax.swing.*;
+import java.awt.*;
+import java.util.HashMap;
+
+public class BankApp {
+	static HashMap<String, Double> accounts = new HashMap<>();
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		JFrame frame = new JFrame("Transaction Manager");
+        frame.setSize(400, 350);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JLabel nameLabel = new JLabel("Account Name:");
+        JTextField nameField = new JTextField(15);
+
+        JLabel amountLabel = new JLabel("Amount:");
+        JTextField amountField = new JTextField(10);
+
+        JButton createBtn = new JButton("Create Account");
+        JButton depositBtn = new JButton("Deposit");
+        JButton withdrawBtn = new JButton("Withdraw");
+        JButton balanceBtn = new JButton("Check Balance");
+
+        JTextArea resultArea = new JTextArea(5, 30);
+        resultArea.setEditable(false);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(0, 2));
+        panel.add(nameLabel); panel.add(nameField);
+        panel.add(amountLabel); panel.add(amountField);
+        panel.add(createBtn); panel.add(depositBtn);
+        panel.add(withdrawBtn); panel.add(balanceBtn);
+        panel.add(resultArea);
+
+        frame.add(panel);
+        frame.setVisible(true);
+
+        createBtn.addActionListener(e -> {
+            String name = nameField.getText();
+            if (!name.isEmpty()) {
+                accounts.put(name, 0.0);
+                resultArea.setText("Account created for: " + name);
+            }
+        });
+
+        depositBtn.addActionListener(e -> {
+            String name = nameField.getText();
+            double amt = Double.parseDouble(amountField.getText());
+            if (accounts.containsKey(name)) {
+                accounts.put(name, accounts.get(name) + amt);
+                resultArea.setText("Deposited $" + amt + " to " + name);
+            } else {
+                resultArea.setText("Account not found.");
+            }
+        });
+
+        withdrawBtn.addActionListener(e -> {
+            String name = nameField.getText();
+            double amt = Double.parseDouble(amountField.getText());
+            if (accounts.containsKey(name)) {
+                double current = accounts.get(name);
+                if (current >= amt) {
+                    accounts.put(name, current - amt);
+                    resultArea.setText("Withdrew $" + amt + " from " + name);
+                } else {
+                    resultArea.setText("Insufficient balance.");
+                }
+            } else {
+                resultArea.setText("Account not found.");
+            }
+        });
+
+        balanceBtn.addActionListener(e -> {
+            String name = nameField.getText();
+            if (accounts.containsKey(name)) {
+                resultArea.setText("Balance for " + name + ": $" + accounts.get(name));
+            } else {
+                resultArea.setText("Account not found.");
+            }
+        });
+	}
+
+}
